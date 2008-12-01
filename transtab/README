@@ -1,0 +1,101 @@
+
+Unicode to 8-bit charset transliteration table
+----------------------------------------------
+
+Markus Kuhn <mkuhn@acm.org> -- 2000-10-09
+
+
+This package contains a table for transliterating ISO 10646 texts into
+best-effort representations using smaller coded character sets (ASCII,
+ISO 8859, etc.). It is primarily intended for inclusion into the GNU C
+library, but might be of use for other applications as well. The table
+is freely available to anyone.
+
+Files:
+
+transtab
+
+  This is the table in the format suggested in ISO/IEC TR 14652
+  <http://www.cl.cam.ac.uk/~mgk25/volatile/ISO-14652.pdf>
+
+transtab.utf
+
+  Same as transtab, but with added comments that show the strings
+  encoded in UTF-8. This is the file that should be edited to make
+  changes. The makefile will build the others from this one.
+
+transtab.repertoire
+
+  List of characters covered by transtab suitable for feeding into
+  uniset. Also contains the UTF-8 strings as comments.
+
+transtab.missing-MES-2
+
+  List of characters in CEN MES-2 minus those in transtab.repertoire.
+  Intended to help getting an overview of what is and what is not
+  covered. Transtab does not aim to cover MES-2 completely. It aims
+  to provide transliterations only for those characters where they are
+  feasible.
+
+transcomp
+
+  Perl script to reformat and merge transliteration tables
+
+
+The transliteration table contains a list of substitution strings
+for each member of the covered Unicode subset. Applications are
+expected to use this list as follows:
+
+  - Remove all substitution strings that contain Unicode characters
+    that are not available in the destination character set.
+
+  - Remove all substitution strings that are longer (or shorter) than
+    required by the application (in particular, some applications
+    might need substitution strings that are exactly one character
+    long).
+
+  - Of the remaining substitution strings, pick the first one
+    in the list.
+
+  - If no substitution string remains for a Unicode character,
+    use a default character such as for instance "?".
+
+Applications are not required or supposed to recursively substitute
+Unicode characters found in substitution strings.
+
+The substitution strings make no use of combining characters, that is
+the output will be ISO 10646 Level 1. The input strings should preferably
+be normalized into decomposed form first.
+
+The substitution strings in this table aim to be visually or
+semantically equivalent to the characters they replace. Ideally, they
+should correspond to the fallback notation that people naturally use
+in email or on typewriters to substitute unavailable characters. They
+are not intended as unique mnemonics for characters (such as for
+example those in RFC 1345).
+
+If you use transliteration in C library locales, please make sure that
+the X/Open function wcwidth() and wcswidth() accurately predict how
+many character cell position the cursor will advance, even when
+transliteration is used. This is essential to allow applications to
+perform correct terminal screen layout even when multi-character
+transliterations are used.
+
+The latest version of this package is available from
+
+  http://www.cl.cam.ac.uk/~mgk25/download/transtab.tar.gz
+
+Please send comments and patches (preferably diff -u on transtab.utf) to
+
+  Markus.Kuhn@cl.cam.ac.uk
+
+Acknowledgements: Some parts of this table were inspired and recycled
+from the def7_uni.tbl file in lynx-2.8.4.
+
+Enjoy ...
+
+Markus
+
+-- 
+Markus G. Kuhn, Computer Laboratory, University of Cambridge, UK
+Email: mkuhn at acm.org,  WWW: <http://www.cl.cam.ac.uk/~mgk25/>

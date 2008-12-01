@@ -1,0 +1,201 @@
+#!/usr/bin/perl
+
+sub utf8 ($) {
+    my $c = shift(@_);
+
+    if ($c < 0x80) {
+        return sprintf("%c", $c);
+    } elsif ($c < 0x800) {
+        return sprintf("%c%c", 0xc0 | ($c >> 6), 0x80 | ($c & 0x3f));
+    } elsif ($c < 0x10000) {
+        return sprintf("%c%c%c",
+                       0xe0 |  ($c >> 12),
+                       0x80 | (($c >>  6) & 0x3f),
+                       0x80 | ( $c        & 0x3f));
+    } elsif ($c < 0x200000) {
+        return sprintf("%c%c%c%c",
+                       0xf0 |  ($c >> 18),
+                       0x80 | (($c >> 12) & 0x3f),
+                       0x80 | (($c >>  6) & 0x3f),
+                       0x80 | ( $c        & 0x3f));
+    } elsif ($c < 0x4000000) {
+        return sprintf("%c%c%c%c%c",
+                       0xf8 |  ($c >> 24),
+                       0x80 | (($c >> 18) & 0x3f),
+                       0x80 | (($c >> 12) & 0x3f),
+                       0x80 | (($c >>  6) & 0x3f),
+                       0x80 | ( $c        & 0x3f));
+
+    } elsif ($c < 0x80000000) {
+        return sprintf("%c%c%c%c%c%c",
+                       0xfe |  ($c >> 30),
+                       0x80 | (($c >> 24) & 0x3f),
+                       0x80 | (($c >> 18) & 0x3f),
+                       0x80 | (($c >> 12) & 0x3f),
+                       0x80 | (($c >> 6)  & 0x3f),
+                       0x80 | ( $c        & 0x3f));
+    } else {
+        return utf8(0xfffd);
+    }
+}
+
+sub append_translit {
+    my ($ucs, $t) = @_;
+
+    $ucs =~ /^[0-9A-F]{4}$/  || die("ERROR: append_translit('$ucs','$t')\n");
+    $t =~ /^([0-9A-F]{4})*$/ || die("ERROR: append_translit('$ucs','$t')\n");
+    #print STDERR "append_translit('$ucs','$t')\n";
+    if (!defined($trans{$ucs})) {
+	$trans{$ucs} = [];
+    }
+    push(@{$trans{$ucs}}, $t);
+}
+
+$unicodedata = "UnicodeData-Latest.txt";
+$datadir = "$ENV{HOME}/local/lib/ucs";
+
+# read list of all Unicode names
+if (!open(UDATA, $unicodedata) && !open(UDATA, "$datadir/$unicodedata")) {
+    die ("Can't open Unicode database '$unicodedata':\n$!\n\n" .
+         "Please make sure that you have downloaded the file\n" .
+         "ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData-Latest.txt\n");
+}
+while (<UDATA>) {
+    if (/^([0-9,A-F]{4});([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*)$/) {
+        $name{$1} = $2;
+    } else {
+        die("Syntax error in line '$_' in file '$unicodedata'");
+    }
+}
+close(UDATA);
+
+while (<ARGV>) {
+    next if /^\s*[\%\#]/;
+    next if /^\s*$/;
+    if (/^([0-9a-fA-F]{4})\s*(\#.*)?$/) {
+	# uniset table format
+	$ucs = $1;
+	$ucs =~ tr/a-f/A-F/;
+	if (!$trans{$ucs}) {
+	    append_translit($ucs, "");
+	}
+    } elsif (/^\s*<U([0-9a-fA-F]{4})>\s+(.*?)(\%.*)?$/) {
+	# ISO/IEC TR 14652 format
+	$ucs = $1;
+	$ucs =~ tr/a-f/A-F/;
+	$_ = $2;
+	while (1) {
+	    if (/^<U([0-9a-fA-F]{4})>;?(.*)$/) {
+		$t = $1;
+		$t =~ tr/a-f/A-F/;
+		$_=$2;
+		append_translit($ucs, $t);
+	    } elsif (/^\"((?:<U[0-9a-fA-F]{4}>)*)\";?(.*)$/) {
+		$t = $1;
+		$_ = $2;
+		$t =~ tr/a-f/A-F/;
+		$t =~ s/<U//g;
+		$t =~ s/>//g;
+		append_translit($ucs, $t);
+	    } elsif (/^\"([^<\"]+)\";?(.*)$/) {
+		$_ = $2;
+		$t = "";
+		for ($i = 0; $i < length($1); $i++) {
+		    $t .= sprintf("%04X", ord(substr($1,$i,1)));
+		}
+		append_translit($ucs, $t);
+	    } elsif (/^\s*\%/ || /^\s*$/) {
+		last;
+	    } else {
+		die("parsing problem: '$_'\n");
+	    }
+	}
+    } elsif (/^U\+([0-9a-fA-F]{4}):(.*)$/ ||
+	     /^U\+([0-9a-fA-F]{4})\s*\"(.*)\"\s*(\#.*)?$/) {
+	# Lynx format
+	$ucs = $1;
+	$ucs =~ tr/a-f/A-F/;
+	$t = "";
+	for ($i = 0; $i < length($2); $i++) {
+	    $t .= sprintf("%04X", ord(substr($2,$i,1)));
+	}
+	append_translit($ucs, $t);
+    } elsif (/0x([0-9a-fA-F]{2})\s*(.*?)\s*(\#.*)?$/) {
+	# Lynx format
+	$t = hex($1);
+	$_=$2;
+	while ($_) {
+	    if (/^U\+([0-9a-fA-F]{4})-U\+([0-9a-fA-F]{4})\s*(.*)$/) {
+		$ucs1=$1;
+		$ucs2=$2;
+		$_=$3;
+		for ($ucs=hex($ucs1); $ucs <= hex($ucs2); $ucs++) {
+		    append_translit(sprintf("%04X", $ucs),
+				    sprintf("%04X", $t));
+		}
+	    } elsif (/^U\+([0-9a-fA-F]{4})\s*(.*)$/) {
+		$_=$3;
+		append_translit(sprintf("%04X", hex($1)),
+				sprintf("%04X", $t));
+	    } else {
+		print STDERR "Can't handle suffix: '$_'\n";
+		last;
+	    }
+	}
+    } else {
+	print STDERR "Can't handle: $_";
+    }
+}
+
+$ENV{format} = iso if !$ENV{format};
+
+if ($ENV{format} =~ /^iso/) {
+    # output in ISO/IEC DTR 14652 format
+    print "% \$Id: \$\n\n";
+    for $ucs (sort(keys(%trans))) {
+	print "% $name{$ucs}\n";
+	if ($ENV{format} eq isoutf) {
+	    print "% " . utf8(hex($ucs)) . " -> ";
+	    @l = @{$trans{$ucs}};
+	    while ($t = shift @l) {
+		print "'";
+		while ($t =~ /^(....)/) {
+		    $t = $';
+		    print utf8(hex($1));
+		}
+		print "'";
+		print ", " if @l;
+	    }
+	    print "\n";
+	}
+	print "<U$ucs> ";
+	@l = @{$trans{$ucs}};
+	while (defined($t = shift @l)) {
+	    if (length($t) == 4) {
+		print "<U$t>";
+	    } else {
+		$t =~ s/(....)/<U$1>/g;
+		print "\"$t\"";
+	    }
+	    print ";" if @l;
+	}
+	print "\n";
+    }
+}
+
+if ($ENV{format} eq utf) {
+    for $ucs (sort(keys(%trans))) {
+	print "U+$ucs # " . utf8(hex($ucs)) . " -> ";
+	@l = @{$trans{$ucs}};
+	while ($t = shift @l) {
+	    print "'";
+	    while ($t =~ /^(....)/) {
+		$t = $';
+		print utf8(hex($1));
+	    }
+	    print "'";
+	    print ", " if @l;
+	}
+	print "\n";
+    }
+}
