@@ -73,7 +73,6 @@ def trans_search(encoding):
 
     if encoding.startswith('translit/'):
         parts = encoding.split('/')
-        print parts
         if parts[1] == 'long':
             encoder = long_encode
         elif parts[1] == 'short':
