@@ -1,4 +1,12 @@
+"""
+Updates translitcodec/__init__.py with translation table information
+built from the 'transtab' database.
+
+:copyright: the translitcodec authors and developers, see AUTHORS.
+:license: MIT, see LICENSE for more details.
+"""
 import csv
+
 
 csv.register_dialect('transtab', delimiter=';')
 

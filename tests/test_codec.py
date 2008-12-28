@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""Very basic codec tests.
+
+:copyright: the translitcodec authors and developers, see AUTHORS.
+:license: MIT, see LICENSE for more details.
+
+"""
 import translitcodec
 
 

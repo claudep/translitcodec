@@ -1,0 +1,7 @@
+include AUTHORS
+include LICENSE
+include CHANGES
+include README
+recursive-include tests *py
+recursive-include scripts *py
+recursive-include transtab *

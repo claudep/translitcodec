@@ -6,6 +6,9 @@ best-effort representations using smaller coded character sets (ASCII,
 ISO 8859, etc.).  The translation tables used by the codecs are from
 the ``transtab`` collection by Markus Kuhn.
 
+:copyright: the translitcodec authors and developers, see AUTHORS.
+:license: MIT, see LICENSE for more details.
+
 """
 import codecs
 import sys
