@@ -37,3 +37,12 @@ def test_translit_one_ascii():
 
     assert data.encode('translit/one/ascii', 'replace') == '? ? woof meaw'
 
+def test_ascii_level_characters_remain():
+    assert u"'".encode('translit/long') == u"'"
+
+def test_zero_width_space():
+    try:
+        char = u'\u200b'.encode('translit/long')
+        assert char == u''
+    except TypeError:
+        assert False
