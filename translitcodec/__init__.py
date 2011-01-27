@@ -102,8 +102,6 @@ codecs.register(trans_search)
 ### >
 
 long_table = {
-  39: u'\u2019',
-  96: u'\u201b',
   160: u' ',
   161: u'!',
   162: u'c',
@@ -945,8 +943,6 @@ long_table = {
 }
 
 short_table = {
-  39: u'\u2019',
-  96: u'\u2018',
   160: u' ',
   161: u'!',
   162: u'c',
@@ -1788,8 +1784,6 @@ short_table = {
 }
 
 single_table = {
-  39: u'\u2019',
-  96: u'\u2018',
   160: u' ',
   161: u'!',
   162: u'c',

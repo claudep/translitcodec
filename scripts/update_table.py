@@ -19,6 +19,8 @@ def read_table(path='transtab/transtab'):
             continue
         from_spec, raw_to = line.strip().split(' ', 1)
         from_ord = int(from_spec[2:-1], 16)
+        if from_ord <= 128:
+            continue
 
         raw = csv.reader([raw_to], 'transtab').next()
         long_char = _unpack_uchrs(raw[0])
