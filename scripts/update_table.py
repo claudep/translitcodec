@@ -35,7 +35,7 @@ def read_table(path='transtab/transtab'):
 
 def _unpack_uchrs(packed):
     chunks = packed.replace('<U', ' ').strip().split()
-    return ''.join(unichr(int(spec[:-1], 16)) for spec in chunks)
+    return u''.join(unichr(int(spec[:-1], 16)) for spec in chunks)
 
 def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
     src = open(path)
