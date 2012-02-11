@@ -6,6 +6,7 @@ built from the 'transtab' database.
 :license: MIT, see LICENSE for more details.
 """
 import csv
+import sys
 
 
 csv.register_dialect('transtab', delimiter=';')
