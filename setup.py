@@ -2,7 +2,7 @@ import codecs
 from distutils.core import setup
 
 
-lines = codecs.open('README', 'r', 'utf-8').readlines()[1:]
+lines = codecs.open('README', 'r', 'utf-8').readlines()[3:]
 lines.extend(codecs.open('CHANGES', 'r', 'utf-8').readlines()[1:])
 desc = u''.join(lines).lstrip().encode('utf-8')
 
