@@ -28,6 +28,7 @@ def long_encode(input, errors='strict'):
     input = unicodedata.normalize('NFKC', input)
     return input.translate(long_table), length
 
+
 def short_encode(input, errors='strict'):
     """Transliterate to 8 bit using as few letters as possible.
 
@@ -40,6 +41,7 @@ def short_encode(input, errors='strict'):
     length = len(input)
     input = unicodedata.normalize('NFKC', input)
     return input.translate(short_table), length
+
 
 def single_encode(input, errors='strict'):
     """Transliterate to 8 bit using only single letter replacements.
@@ -54,8 +56,10 @@ def single_encode(input, errors='strict'):
     input = unicodedata.normalize('NFKC', input)
     return input.translate(single_table), length
 
+
 def no_decode(input, errors='strict'):
     raise TypeError("transliterating codec does not support decode.")
+
 
 def _double_encoding_factory(encoder, byte_encoder, byte_encoding):
     """Send the transliterated output to another codec."""
@@ -64,6 +68,7 @@ def _double_encoding_factory(encoder, byte_encoder, byte_encoding):
         return byte_encoder(uni, errors)[0], length
     dbl_encode.__name__ = '%s_%s' % (encoder.__name__, byte_encoding)
     return dbl_encode
+
 
 def trans_search(encoding):
     """Lookup transliterating codecs."""
@@ -2432,4 +2437,3 @@ single_table = {
 
 
 ### <
-
