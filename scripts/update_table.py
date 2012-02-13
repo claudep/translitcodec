@@ -75,7 +75,7 @@ def _dump_dict(fh, name, data):
 
 if __name__ == '__main__':
     import os
-    if not os.path.exists('translitcodec') and os.path.exists('transtab'):
+    if not (os.path.exists('translitcodec') and os.path.exists('transtab')):
         print "Can not find translitcodec/ and transtab/ directories."
         sys.exit(-1)
     tables = read_table()
