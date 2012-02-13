@@ -11,6 +11,7 @@ import sys
 
 csv.register_dialect('transtab', delimiter=';')
 
+
 def read_table(path='transtab/transtab'):
     long, short, single = {}, {}, {}
 
@@ -36,9 +37,11 @@ def read_table(path='transtab/transtab'):
             single[from_ord] = short_char
     return long, short, single
 
+
 def _unpack_uchrs(packed):
     chunks = packed.replace('<U', ' ').strip().split()
     return u''.join(unichr(int(spec[:-1], 16)) for spec in chunks)
+
 
 def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
     src = open(path)
@@ -62,6 +65,7 @@ def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
     rewrite.write("\n")
     rewrite.writelines(postamble)
     rewrite.close()
+
 
 def _dump_dict(fh, name, data):
     fh.write("%s = {\n" % name)
