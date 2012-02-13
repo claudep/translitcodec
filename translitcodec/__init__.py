@@ -15,6 +15,10 @@ import sys
 import unicodedata
 
 
+__version_info__ = (0, 3)
+__version__ = '.'.join(str(_) for _ in __version_info__)
+
+
 def long_encode(input, errors='strict'):
     """Transliterate to 8 bit using as many letters as needed.
 
