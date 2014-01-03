@@ -15,7 +15,7 @@ import sys
 import unicodedata
 
 
-__version_info__ = (0, 3)
+__version_info__ = (0, 3, 1)
 __version__ = '.'.join(str(_) for _ in __version_info__)
 
 
