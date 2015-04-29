@@ -6,6 +6,7 @@ built from the 'transtab' database.
 :license: MIT, see LICENSE for more details.
 """
 import csv
+import os
 import sys
 
 
@@ -24,7 +25,7 @@ def read_table(path='transtab/transtab'):
         if from_ord <= 128:
             continue
 
-        raw = csv.reader([raw_to], 'transtab').next()
+        raw = next(csv.reader([raw_to], 'transtab'))
         long_char = _unpack_uchrs(raw[0])
         if len(raw) < 2:
             short_char = long_char
@@ -40,7 +41,7 @@ def read_table(path='transtab/transtab'):
 
 def _unpack_uchrs(packed):
     chunks = packed.replace('<U', ' ').strip().split()
-    return u''.join(unichr(int(spec[:-1], 16)) for spec in chunks)
+    return u''.join(chr(int(spec[:-1], 16)) for spec in chunks)
 
 
 def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
@@ -56,7 +57,7 @@ def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
             bucket = old
     src.close()
 
-    rewrite = open(path, 'wb')
+    rewrite = open(path, 'w')
     rewrite.writelines(preamble)
     rewrite.write("\n")
     _dump_dict(rewrite, 'long_table', long)
@@ -70,14 +71,17 @@ def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
 def _dump_dict(fh, name, data):
     fh.write("%s = {\n" % name)
     for pair in sorted(data.items()):
-        fh.write("  %r: %r,\n" % pair)
+        fh.write("  %r: u%r,\n" % pair)
     fh.write("}\n\n")
 
 if __name__ == '__main__':
-    import os
+    if sys.version_info[0] < 3:
+        print("This script requires to be run under Python 3")
+        sys.exit(-1)
+
     if not (os.path.exists('translitcodec') and os.path.exists('transtab')):
-        print "Can not find translitcodec/ and transtab/ directories."
+        print("Can not find translitcodec/ and transtab/ directories.")
         sys.exit(-1)
     tables = read_table()
     update_inclusion(*tables)
-    print "Updated."
+    print("Updated.")
