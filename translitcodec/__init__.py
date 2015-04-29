@@ -15,7 +15,7 @@ import sys
 import unicodedata
 
 
-__version_info__ = (0, 3, 1)
+__version_info__ = (0, 4, 0)
 __version__ = '.'.join(str(_) for _ in __version_info__)
 
 PY3 = sys.version_info[0] == 3
