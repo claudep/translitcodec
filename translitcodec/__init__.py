@@ -18,6 +18,9 @@ import unicodedata
 __version_info__ = (0, 3, 1)
 __version__ = '.'.join(str(_) for _ in __version_info__)
 
+PY3 = sys.version_info[0] == 3
+text_type = str if PY3 else unicode
+
 
 def long_encode(input, errors='strict'):
     """Transliterate to 8 bit using as many letters as needed.
@@ -26,8 +29,8 @@ def long_encode(input, errors='strict'):
     be replaced with ``ae``.
 
     """
-    if not isinstance(input, unicode):
-        input = unicode(input, sys.getdefaultencoding(), errors)
+    if not isinstance(input, text_type):
+        input = text_type(input, sys.getdefaultencoding(), errors)
     length = len(input)
     input = unicodedata.normalize('NFKC', input)
     return input.translate(long_table), length
@@ -40,8 +43,8 @@ def short_encode(input, errors='strict'):
     be replaced with ``a``.
 
     """
-    if not isinstance(input, unicode):
-        input = unicode(input, sys.getdefaultencoding(), errors)
+    if not isinstance(input, text_type):
+        input = text_type(input, sys.getdefaultencoding(), errors)
     length = len(input)
     input = unicodedata.normalize('NFKC', input)
     return input.translate(short_table), length
@@ -54,8 +57,8 @@ def single_encode(input, errors='strict'):
     through unchanged.
 
     """
-    if not isinstance(input, unicode):
-        input = unicode(input, sys.getdefaultencoding(), errors)
+    if not isinstance(input, text_type):
+        input = text_type(input, sys.getdefaultencoding(), errors)
     length = len(input)
     input = unicodedata.normalize('NFKC', input)
     return input.translate(single_table), length
