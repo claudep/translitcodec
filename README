@@ -25,20 +25,20 @@ Three types of transliterating codecs are provided:
 Using the codecs is simple::
 
   >>> import translitcodec
-  >>> u'fácil € ☺'.encode('translit/long')
+  >>> import codecs
+  >>> codecs.encode(u'fácil € ☺', 'translit/long')
   u'facil EUR :-)'
-  >>> u'fácil € ☺'.encode('translit/short')
+  >>> codecs.encode(u'fácil € ☺', 'translit/short')
   u'facil E :-)'
 
 The codecs return Unicode by default.  To receive a bytestring back,
 either chain the output of encode() to another codec, or append the
 name of the desired byte encoding to the codec name::
 
-  >>> u'fácil € ☺'.encode('translit/one').encode('ascii', 'replace')
+  >>> codecs.encode(u'fácil € ☺', 'translit/one').encode('ascii', 'replace')
   'facil E ?'
   >>> u'fácil € ☺'.encode('translit/one/ascii', 'replace')
   'facil E ?'
 
 The package also supplies a 'transliterate' codec, an alias for
 'translit/long'.
-
