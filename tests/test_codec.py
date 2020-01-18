@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Very basic codec tests.
 
 :copyright: the translitcodec authors and developers, see AUTHORS.
@@ -11,19 +10,19 @@ from unittest import TestCase
 
 
 class CodecTests(TestCase):
-    data = u'£ ☹ wøóf méåw'
+    data = '£ ☹ wøóf méåw'
 
     def test_default(self):
-        assert codecs.encode(self.data, 'transliterate') == u'GBP :-( woof meaaw'
+        assert codecs.encode(self.data, 'transliterate') == 'GBP :-( woof meaaw'
 
     def test_translit_long(self):
-        assert codecs.encode(self.data, 'translit/long') == u'GBP :-( woof meaaw'
+        assert codecs.encode(self.data, 'translit/long') == 'GBP :-( woof meaaw'
 
     def test_translit_short(self):
-        assert codecs.encode(self.data, 'translit/short') == u'GBP :-( woof meaw'
+        assert codecs.encode(self.data, 'translit/short') == 'GBP :-( woof meaw'
 
     def test_translit_one(self):
-        assert codecs.encode(self.data, 'translit/one') == u'\u00a3 \u2639 woof meaw'
+        assert codecs.encode(self.data, 'translit/one') == '\u00a3 \u2639 woof meaw'
 
     def test_translit_long_ascii(self):
         assert self.data.encode('translit/long/ascii') == b'GBP :-( woof meaaw'
@@ -41,12 +40,12 @@ class CodecTests(TestCase):
         assert codecs.encode(self.data, 'translit/one/ascii', 'replace') == b'? ? woof meaw'
 
     def test_ascii_level_characters_remain(self):
-        assert codecs.encode(u"'", 'translit/long') == u"'"
+        assert codecs.encode("'", 'translit/long') == "'"
 
     def test_zero_width_space(self):
         try:
-            char = codecs.encode(u'\u200b', 'translit/long')
-            assert char == u''
+            char = codecs.encode('\u200b', 'translit/long')
+            assert char == ''
         except TypeError:
             assert False
 

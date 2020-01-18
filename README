@@ -1,5 +1,3 @@
--*- coding: utf-8 -*-
-
 Unicode to 8-bit charset transliteration codec.
 
 This package contains codecs for transliterating ISO 10646 texts into
@@ -26,18 +24,18 @@ Using the codecs is simple::
 
   >>> import translitcodec
   >>> import codecs
-  >>> codecs.encode(u'fácil € ☺', 'translit/long')
-  u'facil EUR :-)'
-  >>> codecs.encode(u'fácil € ☺', 'translit/short')
-  u'facil E :-)'
+  >>> codecs.encode('fácil € ☺', 'translit/long')
+  'facil EUR :-)'
+  >>> codecs.encode('fácil € ☺', 'translit/short')
+  'facil E :-)'
 
 The codecs return Unicode by default.  To receive a bytestring back,
 either chain the output of encode() to another codec, or append the
 name of the desired byte encoding to the codec name::
 
-  >>> codecs.encode(u'fácil € ☺', 'translit/one').encode('ascii', 'replace')
+  >>> codecs.encode('fácil € ☺', 'translit/one').encode('ascii', 'replace')
   'facil E ?'
-  >>> u'fácil € ☺'.encode('translit/one/ascii', 'replace')
+  >>> 'fácil € ☺'.encode('translit/one/ascii', 'replace')
   'facil E ?'
 
 The package also supplies a 'transliterate' codec, an alias for
