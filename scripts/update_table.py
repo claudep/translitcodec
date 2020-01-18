@@ -16,26 +16,26 @@ csv.register_dialect('transtab', delimiter=';')
 def read_table(path='transtab/transtab'):
     long, short, single = {}, {}, {}
 
-    t = open(path)
-    for line in t.readlines():
-        if not line.startswith('<'):
-            continue
-        from_spec, raw_to = line.strip().split(' ', 1)
-        from_ord = int(from_spec[2:-1], 16)
-        if from_ord <= 128:
-            continue
+    with open(path) as fh:
+        for line in fh.readlines():
+            if not line.startswith('<'):
+                continue
+            from_spec, raw_to = line.strip().split(' ', 1)
+            from_ord = int(from_spec[2:-1], 16)
+            if from_ord <= 128:
+                continue
 
-        raw = next(csv.reader([raw_to], 'transtab'))
-        long_char = _unpack_uchrs(raw[0])
-        if len(raw) < 2:
-            short_char = long_char
-        else:
-            short_char = _unpack_uchrs(raw[1])
+            raw = next(csv.reader([raw_to], 'transtab'))
+            long_char = _unpack_uchrs(raw[0])
+            if len(raw) < 2:
+                short_char = long_char
+            else:
+                short_char = _unpack_uchrs(raw[1])
 
-        long[from_ord] = long_char
-        short[from_ord] = short_char
-        if len(short_char) == 1:
-            single[from_ord] = short_char
+            long[from_ord] = long_char
+            short[from_ord] = short_char
+            if len(short_char) == 1:
+                single[from_ord] = short_char
     return long, short, single
 
 
@@ -45,27 +45,24 @@ def _unpack_uchrs(packed):
 
 
 def update_inclusion(long, short, single, path="translitcodec/__init__.py"):
-    src = open(path)
+    with open(path, 'r') as fh:
+        preamble, old, postamble = [], [], []
+        bucket = preamble
+        for line in fh.readlines():
+            if line.startswith('### <'):
+                bucket = postamble
+            bucket.append(line)
+            if line.startswith('### >'):
+                bucket = old
 
-    preamble, old, postamble = [], [], []
-    bucket = preamble
-    for line in src.readlines():
-        if line.startswith('### <'):
-            bucket = postamble
-        bucket.append(line)
-        if line.startswith('### >'):
-            bucket = old
-    src.close()
-
-    rewrite = open(path, 'w')
-    rewrite.writelines(preamble)
-    rewrite.write("\n")
-    _dump_dict(rewrite, 'long_table', long)
-    _dump_dict(rewrite, 'short_table', short)
-    _dump_dict(rewrite, 'single_table', single)
-    rewrite.write("\n")
-    rewrite.writelines(postamble)
-    rewrite.close()
+    with open(path, 'w') as fh:
+        fh.writelines(preamble)
+        fh.write("\n")
+        _dump_dict(fh, 'long_table', long)
+        _dump_dict(fh, 'short_table', short)
+        _dump_dict(fh, 'single_table', single)
+        fh.write("\n")
+        fh.writelines(postamble)
 
 
 def _dump_dict(fh, name, data):
