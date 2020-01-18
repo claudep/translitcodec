@@ -51,17 +51,17 @@ sub append_translit {
     push(@{$trans{$ucs}}, $t);
 }
 
-$unicodedata = "UnicodeData-Latest.txt";
+$unicodedata = "UnicodeData.txt";
 $datadir = "$ENV{HOME}/local/lib/ucs";
 
 # read list of all Unicode names
 if (!open(UDATA, $unicodedata) && !open(UDATA, "$datadir/$unicodedata")) {
     die ("Can't open Unicode database '$unicodedata':\n$!\n\n" .
          "Please make sure that you have downloaded the file\n" .
-         "ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData-Latest.txt\n");
+         "ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt\n");
 }
 while (<UDATA>) {
-    if (/^([0-9,A-F]{4});([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*)$/) {
+    if (/^([0-9,A-F]{4,6});([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*);([^;]*)$/) {
         $name{$1} = $2;
     } else {
         die("Syntax error in line '$_' in file '$unicodedata'");

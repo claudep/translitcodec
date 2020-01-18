@@ -49,3 +49,17 @@ class CodecTests(TestCase):
             assert char == u''
         except TypeError:
             assert False
+
+
+class AlphabetTests(TestCase):
+    def test_vietnamese(self):
+        alphabet_upper = 'AĂÂBCDĐEÊGHIKLMNOÔƠPQRSTUƯVXY'
+        alphabet_lower = 'aăâbcdđeêghiklmnoôơpqrstuưvxy'
+        self.assertEqual(
+            codecs.encode(alphabet_upper, 'transliterate'),
+            'AAABCDDEEGHIKLMNOOOPQRSTUUVXY'
+        )
+        self.assertEqual(
+            codecs.encode(alphabet_lower, 'transliterate'),
+            'aaabcddeeghiklmnooopqrstuuvxy'
+        )
