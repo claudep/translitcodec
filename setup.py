@@ -1,5 +1,5 @@
 import codecs
-from distutils.core import setup
+from setuptools import setup
 
 
 lines = codecs.open('README', 'r', 'utf-8').readlines()[3:]
