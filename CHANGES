@@ -2,6 +2,12 @@
 translitcodec Changes
 =====================
 
+0.5.2
+---
+Released on January 19, 2020
+
+- Install package with setuptools
+
 0.5.1
 ---
 Released on January 19, 2020
