@@ -18,6 +18,7 @@ setup(name='translitcodec',
       url='https://github.com/claudep/translitcodec',
       packages=['translitcodec'],
       license='MIT License',
+      python_requires='>=3',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
