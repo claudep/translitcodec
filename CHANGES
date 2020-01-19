@@ -2,6 +2,12 @@
 translitcodec Changes
 =====================
 
+0.5.1
+---
+Released on January 19, 2020
+
+- Add python_requires to prevent installation with Python 2 packages
+
 0.5
 ---
 Released on January 18, 2020
