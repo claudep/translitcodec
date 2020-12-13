@@ -82,8 +82,12 @@ def trans_search(encoding):
     # translit/one
     # translit/short/ascii
 
-    if encoding.startswith('translit/'):
-        parts = encoding.split('/')
+    delim = '/'
+    if sys.version_info > (3, 9):
+        delim = '_'
+
+    if encoding.startswith('translit' + delim):
+        parts = encoding.split(delim)
         if parts[1] == 'long':
             encoder = long_encode
         elif parts[1] == 'short':
