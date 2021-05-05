@@ -40,3 +40,25 @@ name of the desired byte encoding to the codec name::
 
 The package also supplies a 'transliterate' codec, an alias for
 'translit/long'.
+
+Another way to use the library is to use an error handle.
+Error handles are available:
+  * 'strict/translit/long', 'strict/translit/short', 'strict/translit/one' - similar to 'strict'
+  * 'ignore/translit/long', 'ignore/translit/short', 'ignore/translit/one' - similar to 'ignore'
+  * 'replace/translit/long', 'replace/translit/short', 'replace/translit/one' - similar to 'replace'
+
+These error handles above, work similarly to Python's built-in ones.
+The difference is that transliteration is attempted first.
+
+  >>> codecs.encode('Zażółć gęślą jaźń € ☺另!@#', 'ISO-8859-2', 'replace/translit/long').decode('ISO-8859-2')
+  'Zażółć gęślą jaźń EUR :-)?!@#'
+  >>> codecs.encode('Zażółć gęślą jaźń € ☺另!@#', 'ISO-8859-2', 'replace/translit/short').decode('ISO-8859-2')
+  'Zażółć gęślą jaźń E :-)?!@#'
+  >>> codecs.encode('Zażółć gęślą jaźń € ☺另!@#', 'ISO-8859-2', 'replace/translit/one').decode('ISO-8859-2')
+  'Zażółć gęślą jaźń E ??!@#'
+  >>> codecs.encode('Zażółć gęślą jaźń € ☺另!@#', 'ISO-8859-2', 'ignore/translit/long').decode('ISO-8859-2')
+  'Zażółć gęślą jaźń EUR :-)!@#'
+  >>> codecs.encode('Zażółć gęślą jaźń € ☺另!@#', 'ISO-8859-2', 'ignore/translit/short').decode('ISO-8859-2')
+  'Zażółć gęślą jaźń E :-)!@#'
+  >>> codecs.encode('Zażółć gęślą jaźń € ☺另!@#', 'ISO-8859-2', 'ignore/translit/one').decode('ISO-8859-2')
+  'Zażółć gęślą jaźń E !@#'

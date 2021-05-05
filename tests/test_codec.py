@@ -62,3 +62,41 @@ class AlphabetTests(TestCase):
             codecs.encode(alphabet_lower, 'transliterate'),
             'aaabcddeeghiklmnooopqrstuuvxy'
         )
+
+
+class ErrorHandlersTests(TestCase):
+    data = 'Zażółć gęślą jaźń € ☺另!@#'
+    page = 'ISO-8859-2'
+
+    def _process(self, error_handler_name):
+        return codecs.encode(self.data, self.page, error_handler_name).decode(self.page)
+
+    def test_replace_long(self):
+        assert self._process('replace/translit/long') == 'Zażółć gęślą jaźń EUR :-)?!@#'
+
+    def test_replace_short(self):
+        assert self._process('replace/translit/short') == 'Zażółć gęślą jaźń E :-)?!@#'
+
+    def test_replace_one(self):
+        assert self._process('replace/translit/one') == 'Zażółć gęślą jaźń E ??!@#'
+
+    def test_ignore_long(self):
+        assert self._process('ignore/translit/long') == 'Zażółć gęślą jaźń EUR :-)!@#'
+
+    def test_ignore_short(self):
+        assert self._process('ignore/translit/short') == 'Zażółć gęślą jaźń E :-)!@#'
+
+    def test_ignore_one(self):
+        assert self._process('ignore/translit/one') == 'Zażółć gęślą jaźń E !@#'
+
+    def test_strict_long(self):
+        with self.assertRaises(UnicodeEncodeError):
+            self._process('strict/translit/long')
+
+    def test_strict_short(self):
+        with self.assertRaises(UnicodeEncodeError):
+            self._process('strict/translit/short')
+
+    def test_strict_one(self):
+        with self.assertRaises(UnicodeEncodeError):
+            self._process('strict/translit/one')
