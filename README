@@ -43,6 +43,7 @@ The package also supplies a 'transliterate' codec, an alias for
 
 Another way to use the library is to use an error handle.
 Error handles are available:
+
   * 'strict/translit/long', 'strict/translit/short', 'strict/translit/one' - similar to 'strict'
   * 'ignore/translit/long', 'ignore/translit/short', 'ignore/translit/one' - similar to 'ignore'
   * 'replace/translit/long', 'replace/translit/short', 'replace/translit/one' - similar to 'replace'
