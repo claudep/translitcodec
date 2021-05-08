@@ -3,6 +3,7 @@ from setuptools import setup
 
 
 lines = codecs.open('README', 'r', 'utf-8').readlines()[3:]
+lines.append('\n')
 lines.extend(codecs.open('CHANGES', 'r', 'utf-8').readlines()[1:])
 desc = ''.join(lines).lstrip()
 
@@ -13,6 +14,7 @@ setup(name='translitcodec',
       version=version,
       description='Unicode to 8-bit charset transliteration codec',
       long_description=desc,
+      long_description_content_type='text/x-rst',
       author='Jason Kirtland',
       author_email='jek@discorporate.us',
       url='https://github.com/claudep/translitcodec',
