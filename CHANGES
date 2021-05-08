@@ -2,6 +2,12 @@
 translitcodec Changes
 =====================
 
+0.7.0
+---
+Released on May 9, 2021
+
+- Added support for error handles
+
 0.6.0
 ---
 Released on December 13, 2020
