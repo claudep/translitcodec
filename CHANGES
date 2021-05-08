@@ -3,25 +3,26 @@ translitcodec Changes
 =====================
 
 0.7.0
----
-Released on May 9, 2021
+-----
+Released on May 8, 2021
 
 - Added support for error handles
+- Fixed conversion of the German eszett char
 
 0.6.0
----
+-----
 Released on December 13, 2020
 
 - Add support for Python 3.9
 
 0.5.2
----
+-----
 Released on January 19, 2020
 
 - Install package with setuptools
 
 0.5.1
----
+-----
 Released on January 19, 2020
 
 - Add python_requires to prevent installation with Python 2 packages
