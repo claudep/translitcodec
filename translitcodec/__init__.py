@@ -196,30 +196,32 @@ def trans_search(encoding):
     # translit/one
     # translit/short/ascii
 
-    delim = '/'
-    if sys.version_info > (3, 9):
+    if encoding.startswith('translit/'):
+        delim = '/'
+    elif encoding.startswith('translit_'):
         delim = '_'
+    else:
+        return None
 
-    if encoding.startswith('translit' + delim):
-        parts = encoding.split(delim)
-        if parts[1] == 'long':
-            encoder = long_encode
-        elif parts[1] == 'short':
-            encoder = short_encode
-        elif parts[1] == 'one':
-            encoder = single_encode
-        else:
-            return None
+    parts = encoding.split(delim)
+    if parts[1] == 'long':
+        encoder = long_encode
+    elif parts[1] == 'short':
+        encoder = short_encode
+    elif parts[1] == 'one':
+        encoder = single_encode
+    else:
+        return None
 
-        if len(parts) == 2:
-            pass
-        elif len(parts) == 3:
-            byte_enc = parts[2]
-            byte_encoder = codecs.lookup(byte_enc).encode
-            encoder = _double_encoding_factory(encoder, byte_encoder, byte_enc)
-        else:
-            return None
-        return codecs.CodecInfo(encoder, no_decode)
+    if len(parts) == 2:
+        pass
+    elif len(parts) == 3:
+        byte_enc = parts[2]
+        byte_encoder = codecs.lookup(byte_enc).encode
+        encoder = _double_encoding_factory(encoder, byte_encoder, byte_enc)
+    else:
+        return None
+    return codecs.CodecInfo(encoder, no_decode)
     return None
 
 codecs.register(trans_search)
